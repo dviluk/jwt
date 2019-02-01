@@ -26,8 +26,8 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth('jwt')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = auth('jwt')->attempt($credentials)) {
+            return response()->json(['error' => 'Credentials not match'], 401);
         }
 
         return $this->respondWithToken($token);
@@ -75,9 +75,12 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('jwt')->factory()->getTTL() * 60
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth('jwt')->factory()->getTTL() * 60
+
+            ]
         ]);
     }
 }
